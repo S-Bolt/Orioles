@@ -3,6 +3,8 @@ require('dotenv').config({ path: './server/.env' });
 const cors = require('cors');
 const routes = require('./controllers');
 const sequelize = require('./config/connections')
+const path = require('path');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +13,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(routes);
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Sequelize Connection Verification
 sequelize.authenticate()

@@ -25,6 +25,10 @@ User.init(
       allowNull: false,
       defaultValue: 'user', // Default role is 'user'
     },
+    profilePicture: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize, 

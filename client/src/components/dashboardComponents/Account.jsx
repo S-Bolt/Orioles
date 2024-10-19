@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import AuthContext from '../../utils/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -9,16 +9,21 @@ import {
    EnvelopeIcon
   } from '@heroicons/react/24/outline'
 
-function Account(){
+function Account() {
 const { login, user, logout } = useContext(AuthContext); 
 const navigate = useNavigate();
 const [activeTab, setActiveTab] = useState('username');
 const [newUsername, setNewUsername] = useState(user?.username || '');
 const [newEmail, setNewEmail] = useState(user?.email || '');
 const [newPassword, setNewPassword] = useState('');
-
+const [file, setFile] = useState(null);
 const [success, setSuccess] = useState('')
 const [error, setError] = useState('')
+
+  // Log user object to verify it contains the profilePicture field
+  useEffect(() => {
+    console.log('User Data:', user);
+  }, [user]); 
 
 //Handle the account deletion
 const handleDeleteAccount = async () => {
@@ -80,6 +85,38 @@ const handleChange = async (e) => {
     console.log('New profile submitted', newUsername, newEmail)
 }
 
+// Handle File Input Change
+  const handleUploadProfilePicture = async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem('token');
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/users/upload-profile', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Profile picture uploaded:', data.path);
+        localStorage.setItem('token', data.token);
+        login(data.token); 
+        setSuccess('Profile picture uploaded successfully!');
+      } else {
+        setError(data.error || 'Failed to upload profile picture');
+      }
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+      setError('An error occurred while uploading the picture.');
+    }
+  };
+
 {/*Switch case to route each tab options*/}
     const navigateTabs = () => {
         return (
@@ -131,6 +168,7 @@ const handleChange = async (e) => {
                 )}
       
                 {activeTab === 'profile picture' && (
+            
                   <div>
                     <label htmlFor='profile-picture'>Profile Picture</label>
                     <input
@@ -138,13 +176,20 @@ const handleChange = async (e) => {
                       id='profile-picture'
                       name='profile-picture'
                       accept='image/*'
-                      onChange={handleProfilePictureChange}
+                      onChange={(e) => setFile(e.target.files[0])}
                       className='w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-orange-400'
                     />
+                    <button
+                        onClick={handleUploadProfilePicture}
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-md py-2 px-4 mt-4 w-full"
+                    >
+                        Upload Picture
+                    </button>
                   </div>
+                 
                 )}
       
-                {activeTab !== 'delete account' && (
+                {activeTab !== 'delete account' && activeTab !== 'profile picture' &&(
                   <button
                     type='submit'
                     className='bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-md py-2 px-4 w-full'
@@ -221,7 +266,7 @@ const handleChange = async (e) => {
                 <div className='flex flex-col items-center'>
                     <img
                         className='rounded-full h-24 w-24 mb-4'
-                        src='https://via.placeholder.com/100'
+                        src={user?.profilePicture ? `http://localhost:3000/${user.profilePicture}` : 'https://via.placeholder.com/100'}
                         alt='User profile'
                     />
                     <h2 className='text-lg font-bold'>{user?.username || 'guest' }</h2>

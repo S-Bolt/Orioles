@@ -3,6 +3,12 @@ const User = require('../../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { authenticateToken } = require('../../middleware/auth');
+const multer = require('multer');
+const path = require('path');
+const upload = require('../../uploads/upload')
+
+
+
 
 // Signup route
 router.post('/signup', async (req, res) => {
@@ -45,7 +51,7 @@ router.post('/login', async (req, res) => {
 
     //Generate token
     const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, role: user.role }, 
+      { id: user.id, username: user.username, email: user.email, profilePicture: user.profilePicture, role: user.role }, 
       process.env.JWT_SECRET, 
       { expiresIn: '1h' });
     res.status(200).json({ message: 'Logged in successfully', token });
@@ -98,6 +104,35 @@ router.delete('/delete', authenticateToken, async (req, res) => {
 
   } catch (error){
     res.status(500).json({ error: 'Error deleting account', details: error.message})
+  }
+})
+
+// --- Multer file uploading ---
+
+
+//Profile picture upload route
+router.post('/upload-profile', authenticateToken, upload.single('profilePicture'), async (req, res) => {
+  try {
+    console.log('Received file:', req.file); // Check if the file is received
+    console.log('Upload Path:', req.file.path); // Verify the saved path
+    const user = await User.findByPk(req.user.id);
+    if(!user){
+      return res.status(404).json({ error: 'User not found'})
+    }
+    //Sav file path to user
+    user.profilePicture = `uploads/${req.file.filename}`
+    await user.save();
+
+     // Generate a new token with the updated user data
+     const token = jwt.sign(
+      { id: user.id, username: user.username, email: user.email, profilePicture: user.profilePicture, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ message: 'Profile picture uploaded successfully', path: req.file.path, token})
+  } catch (error){
+    res.status(500).json({ error: 'Error uploading profile picture', details: error.message })
   }
 })
 

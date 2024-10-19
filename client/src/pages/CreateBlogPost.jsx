@@ -11,7 +11,7 @@ const handleSubmit = async (e) => {
     const token = localStorage.getItem('token');
 
     //Send Post reques to backend to crate new post
-    const response = await fetch('http://localhost:5000/api/post', {
+    const response = await fetch('http://localhost:3000/api/blogPosts/post', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
