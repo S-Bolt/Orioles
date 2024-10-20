@@ -5,9 +5,16 @@ const routes = require('./controllers');
 const sequelize = require('./config/connections')
 const path = require('path');
 
+const { User, Comments, BlogPost } = require('./models'); // Import models
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Log Sequelize associations for debugging
+console.log('User Associations:', User.associations);
+console.log('Comment Associations:', Comments.associations);
+console.log('BlogPost Associations:', BlogPost.associations);
 
 //middleware
 app.use(cors());
@@ -15,6 +22,7 @@ app.use(express.json());
 app.use(routes);
 // Serve static files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // Sequelize Connection Verification
 sequelize.authenticate()

@@ -2,14 +2,22 @@ const router = require('express').Router();
 const User = require('../../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { authenticateToken } = require('../../middleware/auth');
+const { authenticateToken, authorizeAdmin } = require('../../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 const upload = require('../../uploads/upload')
 
 
 
-
+// Get all users
+router.get('/', authenticateToken, async (req, res) => {
+  try{
+    const users = await User.findAll({ attributes: ['id', 'username', 'email', 'role']});
+    res.status(200).json(users)
+  } catch (error){
+    console.error( {error: 'Error fetching users', })
+  }
+})
 // Signup route
 router.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
@@ -107,8 +115,29 @@ router.delete('/delete', authenticateToken, async (req, res) => {
   }
 })
 
-// --- Multer file uploading ---
+//Route to assing roles(admin only)
+router.put('/assign-role/:userId', authenticateToken, authorizeAdmin, async (req, res) => {
+  const { role } = req.body;
 
+  try {
+    const user = await User.findByPk(req.params.userId);
+
+    if (!user){
+      return res.status(404).json({ error: 'User not found'});
+    }
+
+    if (!['admin', 'writer', 'user'].includes(role)){
+      return res.status(404).json({ error: 'Invalid role'})
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({ message: `Role updated to ${role}` });
+  } catch (error){
+    res.status(500).json({ error: "Error assigning role", details: error.message})
+  }
+})
 
 //Profile picture upload route
 router.post('/upload-profile', authenticateToken, upload.single('profilePicture'), async (req, res) => {

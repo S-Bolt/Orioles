@@ -13,9 +13,10 @@ generateHash('admin');
 // VALUES (
 //   'adminUser', 
 //   'admin@example.com', 
-//   '$2b$10$NLraawwrgBS.nvoE63fNBuhv.t9c9QK5JFQ.A9Q8kRZ5rXXteXKhi', 
+//   '$2b$10$nsNAODq.vv5u7aMDzgabP.ufMh2rMJkHgNysA6t7S4AQocoJkvGzq', 
 //   'admin'
 // );
-// UPDATE "users" 
-// SET "password" = '$2b$10$NLraawwrgBS.nvoE63fNBuhv.t9c9QK5JFQ.A9Q8kRZ5rXXteXKhi' //admin
-// WHERE "username" = 'adminUser';
+//  UPDATE "users" 
+//  SET "password" = '$2b$10$nsNAODq.vv5u7aMDzgabP.ufMh2rMJkHgNysA6t7S4AQocoJkvGzq' 
+//  WHERE "username" = 'adminUser';
+

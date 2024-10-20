@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const  blogPosts  = require('../../models/blogPosts');
+const  BlogPosts  = require('../../models/blogPosts');
+const User = require('../../models/user')
 const { 
   authenticateToken, 
   authorizeAdmin, 
@@ -10,7 +11,12 @@ const {
 // Get all blog posts
 router.get('/', async (req, res) => {
     try {
-      const posts = await blogPosts.findAll();
+      const posts = await BlogPosts.findAll({
+        include: {
+          model: User,
+          attributes: ['id', 'username'],
+        }
+      });
       res.status(200).json(posts);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
@@ -22,7 +28,7 @@ router.get('/', async (req, res) => {
   router.get('/:id', async (req, res) => {
     const { id } = req.params;
     try {
-      const blogPost = await blogPosts.findByPk(id); 
+      const blogPost = await BlogPosts.findByPk(id); 
       if (!blogPost) {
         return res.status(404).json({ error: 'Blog post not found' });
       }
@@ -39,7 +45,7 @@ router.get('/', async (req, res) => {
     const { title, content } = req.body;
   
     try {
-      const newPost = await blogPosts.create({ title, content, authorId: req.user.id });
+      const newPost = await BlogPosts.create({ title, content, authorId: req.user.id });
       res.status(201).json(newPost);
     } catch (error) {
       res.status(500).json({ error: 'Error creating blog post', details: error.message });
@@ -49,7 +55,7 @@ router.get('/', async (req, res) => {
   // Delete blog post (admin or author)
   router.delete('/:id', authenticateToken, authorizePostEdit, async (req, res) => {
     try {
-      const post = await blogPosts.findByPk(req.params.id);
+      const post = await BlogPosts.findByPk(req.params.id);
       if (!post){
         return res.status(404).json({ error: 'Blog post not found'})
       }

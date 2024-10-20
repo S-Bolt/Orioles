@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connections'); // Import the Sequelize instance
+const sequelize = require('../config/connections');
+
 
 class User extends Model {}
 
@@ -23,7 +24,7 @@ User.init(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'user', // Default role is 'user'
+      defaultValue: 'user', 
     },
     profilePicture: {
       type: DataTypes.STRING,
@@ -37,5 +38,6 @@ User.init(
     timestamps: false, 
   }
 );
+
 
 module.exports = User;
