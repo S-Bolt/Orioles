@@ -26,13 +26,19 @@ router.get('/', async (req, res) => {
 
 //Get specific blog post
   router.get('/:id', async (req, res) => {
-    const { id } = req.params;
+    
     try {
-      const blogPost = await BlogPosts.findByPk(id); 
+      const blogPost = await BlogPosts.findOne({
+        where: { id: req.params.id },
+        include: [{
+          model: User,
+          attributes: ['username']
+        }],
+      }); 
       if (!blogPost) {
         return res.status(404).json({ error: 'Blog post not found' });
       }
-      res.json(blogPost);
+      res.status(200).json(blogPost);
     } catch (error) {
       console.error('Error fetching blog post:', error);
       res.status(500).json({ error: 'Error fetching blog post', details: error.message });

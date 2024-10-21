@@ -7,14 +7,26 @@ const User = require('../../models/user')
 router.post('/:postId', authenticateToken, async (req, res) => {
     const { content } = req.body;
     const { postId } = req.params;
-
+    const  userId  = req.user.id
     try {
-        const comment = await Comments.create({
+        const newComment = await Comments.create({
             content,
-            userId: req.user.id,
+            userId,
             postId,
         });
-        res.status(200).json(comment)
+
+        //Fetch comment along with user details so upon submitting comment component has username and profile picture to display
+        const commentWithUser = await Comments.findOne({
+            where: {id: newComment.id },
+            include: [{ 
+                model: User,
+                attributes: [
+                    'username',
+                    'profilePicture'
+                ]
+            }],
+        });
+        res.status(200).json(commentWithUser)
     } catch (error){
         res.status(500).json({ error: 'Error creating comment', details: error.message })
     }
@@ -26,15 +38,18 @@ router.get('/:postId', async (req, res) => {
 
     try {
         const comments = await Comments.findAll({ 
-            where: { postId },
+            where: { postId},
             include: [
                 {
                     model: User,
-                    attributes: ['id', 'username'], 
+                    attributes: ['id', 'username', 'profilePicture'], 
                 },
             ],
+            raw: true, // This ensures data is returned as plain objects
+            nest: true, // This ensures nested objects are returned properly
            
         });
+        
         res.status(200).json(comments);
     } catch (error){
         res.status(500).json({ error: 'Error fetching comments', details: error.message })

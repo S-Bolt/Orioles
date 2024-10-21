@@ -5,7 +5,7 @@ const routes = require('./controllers');
 const sequelize = require('./config/connections')
 const path = require('path');
 
-const { User, Comments, BlogPost } = require('./models'); // Import models
+const { User, Comments, BlogPost } = require('./models'); 
 
 
 const app = express();
