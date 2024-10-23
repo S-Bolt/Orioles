@@ -42,6 +42,7 @@ const {
           as: 'author', 
           attributes: ['id', 'username'],
         }],
+        order: [['createdAt', 'DESC']],
       });
   
       res.status(200).json(posts);
@@ -59,7 +60,8 @@ router.get('/', async (req, res) => {
           model: User,
           as: 'author',
           attributes: ['id', 'username'],
-        }
+        },
+        order: [['createdAt', 'DESC']],
       });
       res.status(200).json(posts);
     } catch (error) {

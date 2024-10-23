@@ -23,11 +23,12 @@ function Blog(){
       }, []);
         
 return (
-    <div className="container">
+    <div className="max-w-4xl mx-auto px-4">
         <h1 className='text-4xl font-bold mb-6 text-center'>Bird Blog</h1>
-        <div className='space-y-4'>
+        <div className='flex justify-center'>
+        <div className='space-y-4 w-full max-w-3xl'>
             {blogPosts.map((post) => (
-                <div key={post.id} className='bg bg-gray-100 p-4 rounded shadow-md'>
+                <div key={post.id} className=' bg-gray-100 p-4 rounded shadow-md'>
                     <h2 className='text-2xl font-semibold text-oriolesOrange'>{post.title}</h2>
                     <p className='text-gray-700'>{post.summary}</p>
                     <p className='text-gray-500 text-sm'>{post.date}</p>
@@ -37,6 +38,7 @@ return (
                 </div>
             ))}
 
+        </div>
         </div>
 
     </div>

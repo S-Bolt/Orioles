@@ -1,7 +1,60 @@
 const router = require('express').Router();
 const { authenticateToken } = require('../../middleware/auth')
-const Comments = require('../../models/comment')
-const User = require('../../models/user')
+const {Comments, User, BlogPosts } = require('../../models')
+const { Op } = require('sequelize');
+
+//Search comments with criteria
+router.get('/search', async (req, res) => {
+    const { query, author, startDate, endDate } = req.query;
+
+    try{
+    // Build out conditions for search
+    const conditions = {};
+    //Search content if query provided
+    if(query){
+        conditions.content = { [Op.iLike]: `%${query}%`};
+    }
+
+    //Filter by date range if provided
+    if(startDate && endDate){
+        conditions.createdAt = {
+            [Op.between]: [new Date(startDate), new Date(endDate)],
+        };
+    }
+
+    // Include conditions for author
+    const includeConditions = [
+        {
+          model: User,
+          as: 'author',
+          attributes: ['id', 'username'],
+        },
+        {
+          model: BlogPosts,
+          as: 'post',
+          attributes: ['id', 'title'],
+        },
+      ];
+
+      //Filter for author
+      if(author){
+        includeConditions[0].where = {
+            username: { [Op.iLike]: `%${author}%` },
+          };
+          includeConditions[0].required = true; 
+        }
+
+      const comments = await Comments.findAll({
+        where: conditions,
+        include: includeConditions,
+        order: [['createdAt', 'DESC']],
+      });
+
+      res.status(200).json(comments)
+    } catch (error){
+        res.status(500).json({ error: 'Error during search', detail: error.message})
+    }
+})
 
 //Add comment to a blogPost
 router.post('/:postId', authenticateToken, async (req, res) => {
@@ -42,6 +95,7 @@ router.get('/:postId', async (req, res) => {
             include: [
                 {
                     model: User,
+                    as: 'author',
                     attributes: ['id', 'username', 'profilePicture'], 
                 },
             ],
@@ -78,30 +132,5 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// Search Comments query
-router.get('/search', async (req, res) => {
-    const { query, user, postId } = req.query;
-  
-    try {
-      const comments = await Comment.findAll({
-        where: {
-          [Op.and]: [
-            query ? { content: { [Op.iLike]: `%${query}%` } } : {},
-            user ? { '$User.username$': { [Op.iLike]: `%${user}%` } } : {},
-            postId ? { postId } : {}
-          ]
-        },
-        include: [
-          { model: User, attributes: ['username'] },
-          { model: BlogPost, attributes: ['title'] }
-        ]
-      });
-  
-      res.status(200).json(comments);
-    } catch (error) {
-      res.status(500).json({ error: 'Error searching comments', details: error.message });
-    }
-  });
-  
 
 module.exports = router;

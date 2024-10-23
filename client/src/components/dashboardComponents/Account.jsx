@@ -264,11 +264,20 @@ const handleChange = async (e) => {
             {/*Left column for user card*/}
             <div className='bg-gray-200 p-6 rounded-lg shadow-md'>
                 <div className='flex flex-col items-center'>
-                    <img
-                        className='rounded-full h-24 w-24 mb-4'
-                        src={user?.profilePicture ? `http://localhost:3000/${user.profilePicture}` : 'https://via.placeholder.com/100'}
-                        alt='User profile'
-                    />
+                  {user.profilePicture ? (
+                       <img
+                       className='rounded-full h-24 w-24 mb-4'
+                       src={user?.profilePicture ? `http://localhost:3000/${user.profilePicture}` : 'https://via.placeholder.com/100'}
+                       alt='User profile'
+                   />
+                  ) : (
+                    <div className='h-24 w-24 rounded-full bg-gradient-to-br from-blue-400 to-green-400 flex items-center justify-center mb-4'>
+                      <span className='text-white text-2xl font-bold'>
+                        {user?.username?.charAt(0).toUpperCase() || 'G'}
+                      </span>
+                    </div>
+                  )}
+                   
                     <h2 className='text-lg font-bold'>{user?.username || 'guest' }</h2>
                     <p className='text-gray-600'>{user?.email || 'guestEmail.com' }</p>
                 </div>

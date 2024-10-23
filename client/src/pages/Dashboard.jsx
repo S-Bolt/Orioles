@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link, Route, Routes } from 'react-router-dom';
 import AuthContext from '../utils/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 import logo from '../assets/BbLogo.png';
 import {
   UserIcon, 
@@ -33,7 +34,7 @@ function Dashboard() {
 
     if (token) {
       // Decode token to get user data (or make an API call)
-      const userData = JSON.parse(atob(token.split('.')[1])); // Simple JWT decode, ideally use a library
+      const userData = jwtDecode(token); // Simple JWT decode, ideally use a library
       setUsername(userData.username || '');
       setRole(userData.role || '');
 

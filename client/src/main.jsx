@@ -18,6 +18,7 @@ import Search from './components/dashboardComponents/Search.jsx';
 import Policies from './components/dashboardComponents/Policies.jsx';
 import Support from './components/dashboardComponents/Support.jsx';
 import DashboardHome from './components/dashboardComponents/DashboardHome.jsx';
+import AdminActions from './components/dashboardComponents/AdminActions.jsx';
 
 
 const router = createBrowserRouter([
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: '/create-blog',
         element: <CreateBlogPost />
+      },
+      {
+        path: '/admin-actions',
+        element:<AdminActions />
       },
       {
         path: '/dashboard/*',

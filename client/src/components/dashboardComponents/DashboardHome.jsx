@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import AuthContext from '../../utils/AuthContext';
 import { Link } from 'react-router-dom';
+import UserRecentActivity from './UserRecentActivity';
 
 
 // eslint-disable-next-line react/prop-types
@@ -13,6 +14,9 @@ function DashboardHome() {
         <h1 className="text-3xl font-bold mb-4">Welcome back, {user?.username}!</h1>
         <p className="text-gray-600">Here’s a summary of your recent activity and what’s happening in the community.</p>
       </div>
+
+      {/* Display recent activity for each user */}
+      <UserRecentActivity  />
       
       {/* Show blog creation option for writers and admins */}
       {(user?.role === 'admin' || user?.role === 'writer') && (
@@ -28,7 +32,7 @@ function DashboardHome() {
       {user?.role === 'admin' && (
         <div className="bg-white shadow-lg rounded-md p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">Admin Actions</h2>
-          <Link to="/manage-users" className="text-blue-600 hover:underline">
+          <Link to="/admin-actions" className="text-blue-600 hover:underline">
             Manage Users
           </Link>
         </div>
