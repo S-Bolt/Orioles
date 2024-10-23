@@ -78,4 +78,30 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Search Comments query
+router.get('/search', async (req, res) => {
+    const { query, user, postId } = req.query;
+  
+    try {
+      const comments = await Comment.findAll({
+        where: {
+          [Op.and]: [
+            query ? { content: { [Op.iLike]: `%${query}%` } } : {},
+            user ? { '$User.username$': { [Op.iLike]: `%${user}%` } } : {},
+            postId ? { postId } : {}
+          ]
+        },
+        include: [
+          { model: User, attributes: ['username'] },
+          { model: BlogPost, attributes: ['title'] }
+        ]
+      });
+  
+      res.status(200).json(comments);
+    } catch (error) {
+      res.status(500).json({ error: 'Error searching comments', details: error.message });
+    }
+  });
+  
+
 module.exports = router;

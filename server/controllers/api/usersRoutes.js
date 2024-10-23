@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../../models/user');
+const {User, Comments, BlogPosts } = require('../../models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { authenticateToken, authorizeAdmin } = require('../../middleware/auth');
@@ -142,8 +142,6 @@ router.put('/assign-role/:userId', authenticateToken, authorizeAdmin, async (req
 //Profile picture upload route
 router.post('/upload-profile', authenticateToken, upload.single('profilePicture'), async (req, res) => {
   try {
-    console.log('Received file:', req.file); // Check if the file is received
-    console.log('Upload Path:', req.file.path); // Verify the saved path
     const user = await User.findByPk(req.user.id);
     if(!user){
       return res.status(404).json({ error: 'User not found'})
@@ -162,6 +160,33 @@ router.post('/upload-profile', authenticateToken, upload.single('profilePicture'
     res.status(200).json({ message: 'Profile picture uploaded successfully', path: req.file.path, token})
   } catch (error){
     res.status(500).json({ error: 'Error uploading profile picture', details: error.message })
+  }
+})
+
+//Get User's recent comments
+router.get('/:userId/comments', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+
+    // Log the incoming request data for debugging
+    console.log('Received userId:', userId);
+    console.log('Authenticated user:', req.user);
+    console.log('Authorization header:', req.headers.authorization);
+    console.log('Full request URL:', req.originalUrl); // Log the request URL
+  console.log('Route params:', req.params); // Log all route params
+  try {
+    const recentComments = await Comments.findAll({
+      where: { userId },
+      include: [{
+        model: BlogPosts,
+        attributes: ['title', 'id']
+      }],
+      order: [[ 'createdAt', 'DESC']],
+      limit: 5,
+    });
+
+    res.status(200).json(recentComments)
+  } catch (error){
+    res.status(500).json({ error: "Error fetching user comments", details: error.message})
   }
 })
 

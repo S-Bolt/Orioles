@@ -5,7 +5,7 @@ const routes = require('./controllers');
 const sequelize = require('./config/connections')
 const path = require('path');
 
-const { User, Comments, BlogPost } = require('./models'); 
+const { User, Comments, BlogPosts } = require('./models'); 
 
 
 const app = express();
@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 // Log Sequelize associations for debugging
 console.log('User Associations:', User.associations);
 console.log('Comment Associations:', Comments.associations);
-console.log('BlogPost Associations:', BlogPost.associations);
+console.log('BlogPost Associations:', BlogPosts.associations);
 
 //middleware
 app.use(cors());
