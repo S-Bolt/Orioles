@@ -73,6 +73,7 @@ router.post('/:postId', authenticateToken, async (req, res) => {
             where: {id: newComment.id },
             include: [{ 
                 model: User,
+                as: 'author',
                 attributes: [
                     'username',
                     'profilePicture'

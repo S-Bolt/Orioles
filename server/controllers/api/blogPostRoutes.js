@@ -8,6 +8,9 @@ const {
   authorizePostEdit
  } = require('../../middleware/auth');
  const { Op } = require('sequelize');
+ const upload = require('../../uploads/upload');
+ const fs = require('fs');
+ const path = require('path')
 
   //Search Blog Post by query
   router.get('/search', async (req, res) => {
@@ -52,6 +55,26 @@ const {
     }
   });
 
+
+// Get recent post
+router.get('/recent', async (req, res) => {
+  try {
+    const recentPosts = await BlogPosts.findAll({
+      include: {
+        model: User,
+        as: 'author',
+        attributes: ['id', 'username'],
+      },
+      order: [['createdAt', 'DESC']],
+      limit: 3,
+    });
+
+    res.status(200).json(recentPosts)
+  } catch (error) {
+    console.error('Error fetching recent blog post', error)
+    res.status(500).json({ error: 'Server error', details: error.message })
+  }
+})
 // Get all blog posts
 router.get('/', async (req, res) => {
     try {
@@ -72,12 +95,14 @@ router.get('/', async (req, res) => {
 
 
   // Create a new blog post
-  router.post('/', authenticateToken, authorizeWriterOrAdmin, async (req, res) => {
+  router.post('/', authenticateToken, authorizeWriterOrAdmin, upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
+    //set image to relative path
+    const imageUrl = req.file ? `uploads/blogImages/${req.file.filename}` : null;
   
     try {
-      const newPost = await BlogPosts.create({ title, content, authorId: req.user.id });
-      res.status(201).json(newPost);
+      const newPost = await BlogPosts.create({ title, content, authorId: req.user.id, imageUrl });
+      res.status(200).json(newPost);
     } catch (error) {
       res.status(500).json({ error: 'Error creating blog post', details: error.message });
     }
@@ -106,14 +131,47 @@ router.get('/', async (req, res) => {
 });
 
   // Edit post route (admin or auther)
-  router.put('/:id', authenticateToken, authorizePostEdit, async (req, res) => {
-    const { title, content } = req.body;
+  router.put('/:id', authenticateToken, authorizePostEdit, upload.single('image'), async (req, res) => {
+    const { title, content , removeImage } = req.body;
+    const userId = req.user.id;
 
     try {
+      //update title an content
       req.post.title = title || req.post.title;
       req.post.content = content || req.post.content;
-      await req.post.save();
 
+      //handle image removal
+      if(removeImage === 'true'){
+        if(req.post.imageUrl){
+          //delete old image file from server
+          const imagePath = path.join(__dirname, '..', req.post.imageUrl)
+          fs.unlink(imagePath, (err) => {
+            if(err){
+              console.error('Error deleting old image', err);
+            }
+          });
+        }
+          req.post.imageUrl = null;
+      }
+
+       // Handle new image upload
+        if (req.file) {
+          // Optionally delete the old image file if a new one is uploaded
+          if (req.post.imageUrl) {
+            const oldImagePath = path.join(__dirname, '..', req.post.imageUrl);
+            fs.unlink(oldImagePath, (err) => {
+              if (err) {
+                console.error('Error deleting old image:', err);
+                // Handle error as needed
+              }
+            });
+          }
+
+          // Update imageUrl with the path of the new image
+          req.post.imageUrl = `uploads/blogImages/${req.file.filename}`;
+        }
+
+      await req.post.save();
       res.status(200).json(req.post)
     } catch (error){
       res.status(500).json({ error: 'Error updating post', details: error.message})

@@ -178,7 +178,8 @@ router.get('/:userId/comments', authenticateToken, async (req, res) => {
       where: { userId },
       include: [{
         model: BlogPosts,
-        attributes: ['title', 'id']
+        attributes: ['title', 'id'],
+        as: 'post'
       }],
       order: [[ 'createdAt', 'DESC']],
       limit: 5,

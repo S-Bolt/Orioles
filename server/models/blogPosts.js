@@ -16,6 +16,10 @@ class BlogPosts extends Model {}
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
+    }, 
+    imageUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     authorId: {
       type: DataTypes.INTEGER,
