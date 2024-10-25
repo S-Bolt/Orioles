@@ -15,8 +15,7 @@ function DashboardHome() {
         <p className="text-gray-600">Here’s a summary of your recent activity and what’s happening in the community.</p>
       </div>
 
-      {/* Display recent activity for each user */}
-      <UserRecentActivity  />
+     
       
       {/* Show blog creation option for writers and admins */}
       {(user?.role === 'admin' || user?.role === 'writer') && (
@@ -37,6 +36,9 @@ function DashboardHome() {
           </Link>
         </div>
       )}
+
+       {/* Display recent activity for each user */}
+       <UserRecentActivity  />
      
     </div>
   );

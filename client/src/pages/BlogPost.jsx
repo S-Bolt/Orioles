@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import AuthContext from '../utils/AuthContext';
 
 
+
 function BlogPost(){
     const { id } = useParams();
     const { user } = useContext(AuthContext);
@@ -13,6 +14,8 @@ function BlogPost(){
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedPost, setEditedPost] = useState({ title: '', content: '' });
+    const [imageFile, setImageFile] = useState(null);
+    const [removeImage, setRemoveImage] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -52,7 +55,7 @@ function BlogPost(){
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearers ${token}`,
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({ content: newComment })
         });
@@ -71,25 +74,44 @@ function BlogPost(){
     //Handle the save of an editing post
     const handleSave = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/blogPosts/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(editedPost),
-      });
-  
-      if (response.ok) {
-        const updatedPost = await response.json();
-        console.log('Updated Post:', updatedPost); // Debugging to see the response
-        setPost(updatedPost);
-        setIsEditing(false);
-        alert('Post updated successfully!');
-        navigate(`/blog/${id}`, {replace: true})
-      } else {
-        alert('Failed to update post.');
-      }
+
+      const formData = new FormData();
+        formData.append('title', editedPost.title);
+        formData.append('content', editedPost.content);
+        
+        if (imageFile) {
+          formData.append('image', imageFile); 
+        }
+
+        if (removeImage) {
+          formData.append('removeImage', true); 
+        }
+        
+     try {
+
+        const response = await fetch(`http://localhost:3000/api/blogPosts/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          body: formData,
+        });
+    
+        if (response.ok) {
+          const updatedPost = await response.json();
+          console.log('Updated Post:', updatedPost); // Debugging to see the response
+          setPost(updatedPost);
+          setIsEditing(false);
+          setImageFile(null);
+          setRemoveImage(false);
+          alert('Post updated successfully!');
+          navigate(`/blog/${id}`, {replace: true})
+        } else {
+          alert('Failed to update post.');
+        }
+    } catch (error){
+        console.error('Error updating post', error.message)
+    }
     };
 
     const handleDelete = async () => {
@@ -110,7 +132,7 @@ function BlogPost(){
     }
 
  // Check if user has edit/delete permissions
- const canEditOrDelete = user?.role === 'admin' || user?.id === post?.authorId;//postId?
+ const canEditOrDelete = user?.role === 'admin' || user?.id === post?.authorId;
 
     if (loading){
       return <p>Loading...</p>;
@@ -129,17 +151,49 @@ function BlogPost(){
           {/* Display for administrative capabilities */}
           {isEditing? (
             <>
+            {/*Title input*/}
               <input
                 type='text'
                 value={editedPost.title}
                 onChange={(e) => setEditedPost({ ...editedPost, title: e.target.value })}
                 className="w-full p-2 border border-gray-300 rounded-lg mb-4"
               />
+            {/*Content input*/}
               <textarea
                 value={editedPost.content}
                 onChange={(e) => setEditedPost({ ...editedPost, content: e.target.value })}
-                className="w-full p-2 border border-gray-300 rounded-lg h-48 mb-4"
-          ></textarea>
+                className="w-full p-2 border border-gray-300 rounded-lg h-48 mb-4">       
+              </textarea>
+            {/*Remove Image input*/}
+            {post.imageUrl && (
+              <div className='mb-4'>
+                <label className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={removeImage}
+                    onChange={(e) => setRemoveImage(e.target.checked)}
+                    className="form-checkbox h-5 w-5 text-oriolesOrange"
+                  />
+                  <span className="ml-2 text-gray-700">Remove Existing Image</span>
+              </label>
+              </div>
+            )}
+            {/*New Image input*/}
+              <div className="mb-4">
+                <label className="block text-gray-700">Upload New Image:</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setImageFile(file);
+                        setRemoveImage(false); 
+                      }
+                    }}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                />
+              </div>
               <button
                 onClick={handleSave}
                 className="bg-oriolesOrange hover:bg-orange-500 text-white font-bold py-2 px-4 rounded mr-2"
@@ -147,7 +201,11 @@ function BlogPost(){
                 Save
               </button>
               <button
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setIsEditing(false)
+                  setImageFile(null);
+                  setRemoveImage(false);
+                }}
                 className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded"
               >
                 Cancel
@@ -160,6 +218,13 @@ function BlogPost(){
                 Posted by <span className='font-semibold'>{post.author?.username || "A Ghost"}</span>
                 {' '} on {new Date(post.createdAt).toLocaleDateString()}
               </p>
+              {post.imageUrl && (
+                <img
+                  src={`http://localhost:3000/${post.imageUrl}`}
+                  alt={post.title}
+                  className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg h-auto mb-6 rounded-lg shadow-md object-cover"
+                />
+              )}
             <div className="text-gray-800">
               {post.content.split('\n').map((paragraph, index) => (
                 <p key={index} className="mb-4">{paragraph}</p>
