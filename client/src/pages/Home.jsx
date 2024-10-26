@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom';
       useEffect(() => {
         const fetchRecentPosts = async () => {
           try {
-            const recentPostsResponse = await fetch('http://localhost:3000/api/blogPosts/recent');
+            const recentPostsResponse = await fetch('${API_BASE_URL}/blogPosts/recent');
 
             if(!recentPostsResponse.ok) throw new Error('Recent posts not found');
 
