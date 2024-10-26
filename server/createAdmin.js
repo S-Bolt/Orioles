@@ -8,7 +8,7 @@ const createAdmin = async () => {
     await sequelize.authenticate();
     console.log('Database connection established.');
 
-    const existingAdmin = await User.findOne({ where: { email: 'admin@example.com' } });
+    const existingAdmin = await User.findOne({ where: { email: 'adminUser@gmail.com' } });
 
     if (existingAdmin) {
       console.log('Admin user already exists.');
