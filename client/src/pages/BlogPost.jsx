@@ -52,7 +52,7 @@ function BlogPost(){
       const token = localStorage.getItem('token');
 
       try {
-        const response = await fetch(`http://localhost:3000/api/comments/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/comments/${id}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function BlogPost(){
         
      try {
 
-        const response = await fetch(`http://localhost:3000/api/blogPosts/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/blogPosts/${id}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -117,7 +117,7 @@ function BlogPost(){
 
     const handleDelete = async () => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3000/api/blogPosts/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/blogPosts/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

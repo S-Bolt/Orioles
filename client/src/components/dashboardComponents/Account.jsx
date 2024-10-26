@@ -8,6 +8,7 @@ import {
    LockClosedIcon,
    EnvelopeIcon
   } from '@heroicons/react/24/outline'
+import { API_BASE_URL } from '../config';
 
 function Account() {
 const { login, user, logout } = useContext(AuthContext); 
@@ -29,7 +30,7 @@ const [error, setError] = useState('')
 const handleDeleteAccount = async () => {
     const token = localStorage.getItem('token');
     try {
-        const response = await fetch('http://localhost:3000/api/users/delete', {
+        const response = await fetch(`${API_BASE_URL}/users/delete`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -53,7 +54,7 @@ const handleChange = async (e) => {
     
     try {
         const token = localStorage.getItem('token')
-        const response = await fetch('http://localhost:3000/api/users/update', {
+        const response = await fetch(`${API_BASE_URL}/users/update`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ const handleChange = async (e) => {
     formData.append('profilePicture', file);
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/upload-profile', {
+      const response = await fetch(`${API_BASE_URL}/users/upload-profile`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

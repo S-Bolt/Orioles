@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useContext } from 'react';
 import AuthContext from "../../utils/AuthContext";
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 
 function UserRecentActivity() {
@@ -16,7 +17,7 @@ function UserRecentActivity() {
             
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:3000/api/users/${user.id}/comments`, {
+                const response = await fetch(`${API_BASE_URL}/users/${user.id}/comments`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                 }

@@ -17,6 +17,7 @@ import Search from '../components/dashboardComponents/Search';
 import Policies from '../components/dashboardComponents/Policies';
 import Support from '../components/dashboardComponents/Support';
 import DashboardHome from '../components/dashboardComponents/DashboardHome';
+import { API_BASE_URL } from '../config';
 
 function Dashboard() {
  
@@ -51,7 +52,7 @@ function Dashboard() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/users/update', {
+      const response = await fetch(`${API_BASE_URL}/users/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ import { API_BASE_URL } from '../config';
       useEffect(() => {
         const fetchRecentPosts = async () => {
           try {
-            const recentPostsResponse = await fetch('${API_BASE_URL}/blogPosts/recent');
+            const recentPostsResponse = await fetch(`${API_BASE_URL}/blogPosts/recent`);
 
             if(!recentPostsResponse.ok) throw new Error('Recent posts not found');
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from '../config';
 import {
     FingerPrintIcon,
     EnvelopeIcon,
@@ -16,7 +17,7 @@ function AdminActions() {
         const fetchUsers = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:3000/api/users', {
+                const response = await fetch(`${API_BASE_URL}/users`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     },
@@ -39,7 +40,7 @@ function AdminActions() {
     const handleChange = async (userId, newRole) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3000/api/users/assign-role/${userId}`, {
+            const response = await fetch(`${API_BASE_URL}/users/assign-role/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

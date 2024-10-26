@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 function Search() {
   const [searchType, setSearchType] = useState('posts');
@@ -33,8 +34,8 @@ function Search() {
     //SearchType is changed when the button is toggled to point to appropriate endpoint
     const endpoint =
     searchType === 'posts'
-      ? `http://localhost:3000/api/blogPosts/search`
-      : `http://localhost:3000/api/comments/search`;
+      ? `${API_BASE_URL}/blogPosts/search`
+      : `${API_BASE_URL}/comments/search`;
   
     try {
       const response = await fetch(`${endpoint}?${params.toString()}`);
