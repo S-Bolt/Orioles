@@ -8,7 +8,7 @@ import {
    LockClosedIcon,
    EnvelopeIcon
   } from '@heroicons/react/24/outline'
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL } from '../../config';
 
 function Account() {
 const { login, user, logout } = useContext(AuthContext); 

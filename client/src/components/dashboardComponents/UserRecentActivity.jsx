@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useContext } from 'react';
 import AuthContext from "../../utils/AuthContext";
 import { Link } from 'react-router-dom';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL } from '../../config';
 
 
 function UserRecentActivity() {
