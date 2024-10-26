@@ -2,6 +2,7 @@ import logo from '../assets/BbLogo.png'
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../utils/AuthContext';
+import { API_BASE_URL } from '../config';
 
 
 const Signup = () => {
@@ -17,7 +18,7 @@ const Signup = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/signup', {
+      const response = await fetch('${API_BASE_URL}/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
