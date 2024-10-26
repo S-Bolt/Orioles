@@ -7,7 +7,7 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import NoMatch from './pages/NoMatch.jsx';  
-import Blog from './pages/blog.jsx';
+import Blog from './pages/Blog.jsx';
 import BlogPost from './pages/BlogPost.jsx';
 import CreateBlogPost from './pages/CreateBlogPost.jsx';
 import Dashboard from './pages/Dashboard.jsx';
