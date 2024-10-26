@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AuthContext from '../utils/AuthContext';
+import { API_BASE_URL } from '../config';
 
 
 
@@ -21,8 +22,8 @@ function BlogPost(){
     useEffect(() => {
       const fetchPostandComments = async () => {
         try {
-          const postResponse = await fetch(`http://localhost:3000/api/blogPosts/${id}`);
-          const commentsResponse = await fetch(`http://localhost:3000/api/comments/${id}`);
+          const postResponse = await fetch(`${API_BASE_URL}/blogPosts/${id}`);
+          const commentsResponse = await fetch(`${API_BASE_URL}/comments/${id}`);
 
           if (!postResponse.ok) throw new Error('Blog post not found')
           if (!commentsResponse.ok) throw new Error('Comments not found')
