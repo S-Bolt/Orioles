@@ -22,6 +22,7 @@ const createAdmin = async () => {
       username: 'adminUser',
       password: hashedPassword,
       role: 'admin', 
+      proflePictureUrl: ''
      
     });
 
