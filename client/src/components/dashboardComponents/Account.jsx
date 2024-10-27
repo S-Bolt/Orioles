@@ -8,7 +8,7 @@ import {
    LockClosedIcon,
    EnvelopeIcon
   } from '@heroicons/react/24/outline'
-import { API_BASE_URL, IMAGE_BASE_URL } from '../../config';
+import { API_BASE_URL } from '../../config';
 
 function Account() {
 const { login, user, logout } = useContext(AuthContext); 
@@ -265,10 +265,10 @@ const handleChange = async (e) => {
             {/*Left column for user card*/}
             <div className='bg-gray-200 p-6 rounded-lg shadow-md'>
                 <div className='flex flex-col items-center'>
-                  {user.profilePicture ? (
+                  {user.profilePictureUrl ? (
                        <img
                        className='rounded-full h-24 w-24 mb-4'
-                       src={user?.profilePicture ? `${IMAGE_BASE_URL}${user.profilePicture}` : 'https://via.placeholder.com/100'}
+                       src={user.profilePictureUrl}
                        alt='User profile'
                    />
                   ) : (

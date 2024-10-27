@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import AuthContext from '../utils/AuthContext';
-import { API_BASE_URL, IMAGE_BASE_URL } from '../config';
+import { API_BASE_URL } from '../config';
 
 
 
@@ -223,7 +223,7 @@ function BlogPost(){
               </p>
               {post.imageUrl && (
                 <img
-                  src={`${IMAGE_BASE_URL}${post.imageUrl}`}
+                  src={post.imageUrl}
                   alt={post.title}
                   className="w-full sm:max-w-sm md:max-w-md lg:max-w-lg h-auto mb-6 rounded-lg shadow-md object-cover"
                 />
@@ -259,9 +259,9 @@ function BlogPost(){
                 <ul className="space-y-4">
                   {comments.map((comment) => (
                     <li key={comment.id} className="bg-white flex items-center space-x-3">
-                      {comment.author?.profilePicture ? (
+                      {comment.author?.profilePictureUrl ? (
                          <img
-                         src={`${IMAGE_BASE_URL}${comment.author?.profilePicture}`}
+                         src={comment.author.profilePictureUrl}
                          alt='User Avatar'
                          className='w-10 h-10 rounded-full'
                        />

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { API_BASE_URL, IMAGE_BASE_URL } from '../config';
+import { API_BASE_URL} from '../config';
 
 
 function Blog(){
@@ -36,7 +36,7 @@ return (
             {post.imageUrl ? (
               <div className="md:w-1/3 flex-shrink-0">
                 <img
-                  src={`${IMAGE_BASE_URL}${post.imageUrl}`}
+                  src={post.imageUrl}
                   alt={post.title}
                   className="w-full h-48 md:h-full object-contain rounded"
                   loading="lazy"

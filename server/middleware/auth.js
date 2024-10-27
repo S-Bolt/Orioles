@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const  blogPosts  = require('../models/blogPosts');
+const  BlogPosts  = require('../models/blogPosts');
 
 // Middleware to check JWT token and role
 const authenticateToken = (req, res, next) => {
@@ -34,7 +34,7 @@ const authorizeWriterOrAdmin = (req, res, next) => {
 
 // Middleware to authorize only the post author or admin
 const authorizePostEdit = async (req, res, next) => {
-  const post = await blogPosts.findByPk(req.params.id);
+  const post = await BlogPosts.findByPk(req.params.id);
   if (!post) return res.status(404).json({ error: 'Post not found' });
 
   // Allow admin or the post's author to proceed

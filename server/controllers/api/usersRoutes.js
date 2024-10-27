@@ -6,8 +6,16 @@ const { authenticateToken, authorizeAdmin } = require('../../middleware/auth');
 const multer = require('multer');
 const path = require('path');
 const upload = require('../../uploads/upload')
+const { DeleteObjectCommand, S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
 // Get all users
 router.get('/', authenticateToken, async (req, res) => {
@@ -59,9 +67,15 @@ router.post('/login', async (req, res) => {
 
     //Generate token
     const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, profilePicture: user.profilePicture, role: user.role }, 
+      { id: user.id, 
+        username: user.username, 
+        email: user.email, 
+        profilePictureUrl: user.profilePictureUrl, 
+        role: user.role 
+      }, 
       process.env.JWT_SECRET, 
       { expiresIn: '1h' });
+
     res.status(200).json({ message: 'Logged in successfully', token });
   } catch (error) {
     res.status(500).json({ error: 'Login error', details: error.message });
@@ -146,13 +160,45 @@ router.post('/upload-profile', authenticateToken, upload.single('profilePicture'
     if(!user){
       return res.status(404).json({ error: 'User not found'})
     }
-    //Sav file path to user
-    user.profilePicture = `uploads/${req.file.filename}`
+    //Already has pic then delete it
+    if(user.profilePictureUrl) {
+      try {
+        const url = new URL(user.profilePictureUrl);
+        const key = decodeURIComponent(url.pathname.substring(1));
+
+        await s3Client.send(new DeleteObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: key,
+        }));
+      } catch (Error) {
+        console.error('Error deleting old profile picture:', Error);
+      }  
+    }
+
+    // Upload new profile picture to S3
+    const fileName = `profilePictures/${Date.now()}-${req.file.originalname}`;
+    const uploadParams = {
+      Bucket: process.env.S3_BUCKET_NAME,
+      Key: fileName,
+      Body: req.file.buffer,
+      ContentType: req.file.mimetype,
+    };
+
+    await s3Client.send(new PutObjectCommand(uploadParams));
+
+    // Update user's profile picture URL in the database
+    const newProfilePictureUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+    user.profilePictureUrl = newProfilePictureUrl;
     await user.save();
 
      // Generate a new token with the updated user data
      const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, profilePicture: user.profilePicture, role: user.role },
+      { id: user.id, 
+        username: user.username, 
+        email: user.email, 
+        profilePictureUrl: user.profilePictureUrl, 
+        role: user.role 
+      },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

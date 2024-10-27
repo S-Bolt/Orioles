@@ -26,7 +26,7 @@ User.init(
       allowNull: false,
       defaultValue: 'user', 
     },
-    profilePicture: {
+    profilePictureUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },

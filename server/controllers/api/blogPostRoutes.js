@@ -9,8 +9,16 @@ const {
  } = require('../../middleware/auth');
  const { Op } = require('sequelize');
  const upload = require('../../uploads/upload');
- const fs = require('fs');
- const path = require('path')
+ const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+
+ // Initialize S3 client
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
 
   //Search Blog Post by query
   router.get('/search', async (req, res) => {
@@ -97,11 +105,33 @@ router.get('/', async (req, res) => {
   // Create a new blog post
   router.post('/', authenticateToken, authorizeWriterOrAdmin, upload.single('image'), async (req, res) => {
     const { title, content } = req.body;
-    //set image to relative path
-    const imageUrl = req.file ? `uploads/blogImages/${req.file.filename}` : null;
+    let imageUrl = null;
   
     try {
-      const newPost = await BlogPosts.create({ title, content, authorId: req.user.id, imageUrl });
+        //Handle image upload to S3
+        if(req.file){
+          const fileName = `blogImages/${Date.now()}-${req.file.originalname}`;
+
+          const uploadParams = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: fileName,
+            Body: req.file.buffer,
+            ContentType: req.file.mimetype,
+          };
+    
+          // Upload the file to S3
+          await s3Client.send(new PutObjectCommand(uploadParams));
+    
+          // Construct the image URL
+          imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+        }
+        
+      const newPost = await BlogPosts.create({ 
+        title, 
+        content, 
+        authorId: req.user.id, 
+        imageUrl,
+      });
       res.status(200).json(newPost);
     } catch (error) {
       res.status(500).json({ error: 'Error creating blog post', details: error.message });
@@ -133,43 +163,67 @@ router.get('/', async (req, res) => {
   // Edit post route (admin or auther)
   router.put('/:id', authenticateToken, authorizePostEdit, upload.single('image'), async (req, res) => {
     const { title, content , removeImage } = req.body;
-    const userId = req.user.id;
 
     try {
-      //update title an content
-      req.post.title = title || req.post.title;
-      req.post.content = content || req.post.content;
+      const post = req.post;
+      if(!post){
+        return res.status(404).json({ error: 'Blog post not found'})
+      }
+      //update title and content
+      post.title = title || post.title;
+      post.content = content || post.content;
 
       //handle image removal
-      if(removeImage === 'true'){
-        if(req.post.imageUrl){
-          //delete old image file from server
-          const imagePath = path.join(__dirname, '..', req.post.imageUrl)
-          fs.unlink(imagePath, (err) => {
-            if(err){
-              console.error('Error deleting old image', err);
-            }
-          });
-        }
-          req.post.imageUrl = null;
+      if (removeImage === 'true' && post.imageUrl) {
+        console.log('Attempting to remove image:', post.imageUrl); // Logging
+        // Extract the S3 object key from the imageUrl
+        const url = new URL(req.post.imageUrl);
+        const key = decodeURIComponent(url.pathname.substring(1)); 
+  
+        // Delete the old image from S3
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: key,
+          })
+        );
+  
+        post.imageUrl = null;
+        console.log('Image removed successfully.');
       }
 
-       // Handle new image upload
+          // Handle new image upload
         if (req.file) {
-          // Optionally delete the old image file if a new one is uploaded
-          if (req.post.imageUrl) {
-            const oldImagePath = path.join(__dirname, '..', req.post.imageUrl);
-            fs.unlink(oldImagePath, (err) => {
-              if (err) {
-                console.error('Error deleting old image:', err);
-                // Handle error as needed
-              }
-            });
-          }
+          // If there's an existing image, delete it
+          console.log('Deleting existing image:', post.imageUrl); // Logging
+          if (post.imageUrl) {
+            const url = new URL(req.post.imageUrl);
+            const key = decodeURIComponent(url.pathname.substring(1));
 
-          // Update imageUrl with the path of the new image
-          req.post.imageUrl = `uploads/blogImages/${req.file.filename}`;
+            await s3Client.send(
+              new DeleteObjectCommand({
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: key,
+              })
+            );
+          }
+          console.log('Existing image deleted successfully.');
+
+          // Upload the new image
+          const fileName = `blogImages/${Date.now()}-${req.file.originalname}`;
+          const uploadParams = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: fileName,
+            Body: req.file.buffer,
+            ContentType: req.file.mimetype,
+          };
+
+          await s3Client.send(new PutObjectCommand(uploadParams));
+          // Construct the image URL
+          const newImageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+          post.imageUrl = newImageUrl;
         }
+
 
       await req.post.save();
       res.status(200).json(req.post)
@@ -185,6 +239,19 @@ router.get('/', async (req, res) => {
       if (!post){
         return res.status(404).json({ error: 'Blog post not found'})
       }
+
+      // If the post has an image, delete it from S3
+    if (post.imageUrl) {
+      const url = new URL(post.imageUrl);
+      const key = decodeURIComponent(url.pathname.substring(1)); // Removes leading '/'
+
+      await s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: key,
+        })
+      );
+    }
 
       await post.destroy();
       res.status(200).json({ message: 'Blog post deleted'})

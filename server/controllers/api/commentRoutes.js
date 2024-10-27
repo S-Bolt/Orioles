@@ -76,7 +76,7 @@ router.post('/:postId', authenticateToken, async (req, res) => {
                 as: 'author',
                 attributes: [
                     'username',
-                    'profilePicture'
+                    'profilePictureUrl'
                 ]
             }],
         });
@@ -97,7 +97,7 @@ router.get('/:postId', async (req, res) => {
                 {
                     model: User,
                     as: 'author',
-                    attributes: ['id', 'username', 'profilePicture'], 
+                    attributes: ['id', 'username', 'profilePictureUrl'], 
                 },
             ],
             raw: true, // This ensures data is returned as plain objects

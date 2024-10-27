@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import birdBathCool from '../assets/birdBathCool.png';
 import { Link } from 'react-router-dom';
-import { API_BASE_URL, IMAGE_BASE_URL } from '../config';
+import { API_BASE_URL } from '../config';
 
     const Home = () => {
       const [recentPosts, setRecentPost] = useState([]);
@@ -77,7 +77,7 @@ import { API_BASE_URL, IMAGE_BASE_URL } from '../config';
                     >
                        {post.imageUrl && (
                           <img
-                            src={`${IMAGE_BASE_URL}${post.imageUrl}`} 
+                            src={post.imageUrl} 
                             alt={post.title}
                             className="w-full h-48 object-cover"
                           />
