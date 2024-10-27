@@ -18,7 +18,7 @@ console.log("NODE_ENV:", process.env.NODE_ENV);
     process.env.PG_PASSWORD,
     {
       host: process.env.PG_HOST,
-      port: process.env.PG_PORT || 5433,
+      port: process.env.PG_PORT || 5432,
       dialect: 'postgres',
       dialectOptions: {
         ssl: isProduction ? {
