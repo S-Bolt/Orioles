@@ -1,5 +1,5 @@
 
-const sequelize = require('./models'); 
+const sequelize = require('./config/connections');
 const { User } = require('./models'); 
 const bcrypt = require('bcrypt');
 
@@ -15,7 +15,7 @@ const createAdmin = async () => {
       process.exit(0);
     }
 
-    const hashedPassword = await bcrypt.hash('admin', 10); // Replace with a strong password
+    const hashedPassword = await bcrypt.hash('admin', 10); 
 
     const adminUser = await User.create({
       email: 'adminUser@gmail.com', 
