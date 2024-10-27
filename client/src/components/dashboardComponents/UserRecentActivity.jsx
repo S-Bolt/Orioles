@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useContext } from 'react';
 import AuthContext from "../../utils/AuthContext";
 import { Link } from 'react-router-dom';
-import { API_BASE_URL } from '../../config';
+import { API_BASE_URL, IMAGE_BASE_URL } from '../../config';
 
 
 function UserRecentActivity() {
@@ -50,7 +50,7 @@ return(
                 <li key={comment.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-md shadow-sm">
                     {user?.profilePicture ? (
                         <img
-                         src={`http://localhost:3000/${user.profilePicture}`}
+                         src={`${IMAGE_BASE_URL}${user.profilePicture}`}
                          alt="User Avatar"
                          className="w-10 h-10 rounded-full"
                        />

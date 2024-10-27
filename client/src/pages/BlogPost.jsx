@@ -22,8 +22,7 @@ function BlogPost(){
 
     useEffect(() => {
       const fetchPostandComments = async () => {
-        console.log('API_BASE_URL:', API_BASE_URL);
-      console.log('IMAGE_BASE_URL:', IMAGE_BASE_URL);
+        
         try {
           const postResponse = await fetch(`${API_BASE_URL}/blogPosts/${id}`);
           const commentsResponse = await fetch(`${API_BASE_URL}/comments/${id}`);
