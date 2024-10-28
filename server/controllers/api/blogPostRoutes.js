@@ -245,12 +245,17 @@ router.get('/', async (req, res) => {
       const url = new URL(post.imageUrl);
       const key = decodeURIComponent(url.pathname.substring(1)); // Removes leading '/'
 
-      await s3Client.send(
-        new DeleteObjectCommand({
-          Bucket: process.env.S3_BUCKET_NAME,
-          Key: key,
-        })
-      );
+      try {
+        await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: key,
+          })
+        );
+        console.log('Image deleted from S3 successfully.');
+      } catch (error) {
+        console.error('Error deleting image from S3:', error);
+      }
     }
 
       await post.destroy();
