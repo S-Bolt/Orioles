@@ -28,14 +28,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 sequelize.authenticate()
   .then(() => {
     console.log('Database connection has been established successfully.');
-    return sequelize.sync({ alter: true });
+    
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
     
   });
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ alter: true }).then(() => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }) 
