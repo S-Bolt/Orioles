@@ -106,9 +106,12 @@ import { API_BASE_URL } from '../config';
                 <p className="text-lg mb-8">
                   Be the first to know about the latest Orioles news and blog updates. Join our community now!
                 </p>
-                <a href="/signup" className="bg-white text-orange-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors">
+                <Link
+                  to="/signup"
+                  className="bg-white text-orange-500 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors"
+                >
                   Sign Up Now
-                </a>
+                </Link>
               </div>
             </section>
           </div>
