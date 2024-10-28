@@ -6,6 +6,7 @@
     "start": "node server.js",
     "create-admin": "node createAdmin.js",
     "deploy": "npm run create-admin && npm run start",
+    "migrate": "sequelize-cli db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

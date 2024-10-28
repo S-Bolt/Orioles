@@ -35,7 +35,21 @@ sequelize.authenticate()
     
   });
 
-sequelize.sync({ alter: true }).then(() => {
+  const { exec } = require('child_process');
+
+exec('npm run migrate', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Migration error: ${error.message}`);
+    return;
+  }
+  if (stderr) {
+    console.error(`Migration stderr: ${stderr}`);
+    return;
+  }
+  console.log(`Migration stdout: ${stdout}`);
+});
+
+sequelize.sync({ force: false }).then(() => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }) 
