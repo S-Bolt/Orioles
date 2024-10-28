@@ -11,20 +11,6 @@ const { User, Comments, BlogPosts } = require('./models');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const { exec } = require('child_process');
-
-exec('npm run migrate', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`Migration error: ${error.message}`);
-    return;
-  }
-  if (stderr) {
-    console.error(`Migration stderr: ${stderr}`);
-    return;
-  }
-  console.log(`Migration stdout: ${stdout}`);
-});
-
 // Log Sequelize associations for debugging
 console.log('User Associations:', User.associations);
 console.log('Comment Associations:', Comments.associations);
@@ -48,8 +34,6 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', err);
     
   });
-
- 
 
 sequelize.sync({ force: false }).then(() => {
 app.listen(PORT, () => {
