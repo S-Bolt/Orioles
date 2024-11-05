@@ -5,7 +5,7 @@ Welcome to the Orioles Fan Blog! This application provides an interactive platfo
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-Setup and Installation
+- [Setup and Installation](#setup-and-installation)
 Environment Variables
 Usage
 - [Project Structure](#project-structure)
@@ -50,7 +50,13 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 
 **PostgreSQL:** Database for storing application data.
 
+## Setup and Installation
+
+
 ## Project Structure
+1. Clone the repository
+    `git clone https://github.com/S-Bolt/Orioles.git
+    cd Orioles`
 
 ![Project Structure](./client/src/assets/project-structure.png)
 
