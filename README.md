@@ -24,7 +24,7 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 
 **Image Uploads:** Blog posts and user profiles support image uploads, managed through Amazon S3.
 
-**ommenting and Interaction:** Users can comment on blog posts and interact with content.
+**Commenting and Interaction:** Users can comment on blog posts and interact with content.
 
 **Search and Filtering:** Search for posts by keywords, authors, or date ranges.
 
@@ -52,22 +52,7 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 
 ## Project Structure
 
-Orioles/
-├── client/               # Frontend (React + Vite)
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── utils/
-│   │   └── ...
-│   └── ...
-├── server/               # Backend (Express + Node.js)
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── uploads/
-│   └── ...
-└── README.md
+![Project Structure](./client/src/assets/project-structure.png)
 
 ## Contributing
 
