@@ -6,8 +6,8 @@ Welcome to the Orioles Fan Blog! This application provides an interactive platfo
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Setup and Installation](#setup-and-installation)
-Environment Variables
-Usage
+- [Environment Variables](#environment-variables)
+- [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
@@ -55,8 +55,50 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 
 ## Project Structure
 1. Clone the repository
-    `git clone https://github.com/S-Bolt/Orioles.git
-    cd Orioles`
+ ```bash
+    git clone https://github.com/S-Bolt/Orioles.git
+    cd Orioles
+```
+
+2. Install dependencies
+```bash
+    npm install
+    cd client && npm install
+    cd ../server && npm install
+```
+
+3. Setup PostgreSQL: Ensure PostgreSQL is installed and running. Create a new database for the application.
+
+4. AWS S3 Bucket: Configure an S3 bucket for storing images.
+
+## Environment Variables
+Create .env files in the root, client, and server directories as needed. Here’s a template for the server .env:
+```plaintext
+    PG_USER="your_db_user"
+    PG_PASSWORD="your_db_password"
+    PG_HOST="your_db_host"
+    PG_DATABASE="your_db_name"
+    PG_PORT="5432"
+    JWT_SECRET="your_jwt_secret"
+
+    AWS_ACCESS_KEY_ID="your_aws_access_key"
+    AWS_SECRET_ACCESS_KEY="your_aws_secret_key"
+    AWS_REGION="your_aws_region"
+    S3_BUCKET_NAME="your_bucket_name"
+```
+Client.env:
+```plaintext
+    VITE_API_BASE_URL="your_api_base_url"
+```
+## Usage
+Navigate to main directory then start development server
+```bash
+    cd Orioles
+    npm run dev
+```
+Once done open the app by visting http://localhost:5173/ 
+
+## Project Structure
 
 ![Project Structure](./client/src/assets/project-structure.png)
 
@@ -67,3 +109,6 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 3. Create a new branch.
 4. Make your changes and test thoroughly.
 5. Submit a pull request.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
