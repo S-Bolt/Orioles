@@ -3,7 +3,7 @@ Welcome to the Orioles Fan Blog! This application provides an interactive platfo
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Features] (#features)
+- [Features](#features)
 - [Technologies Used](#technologies-used)
 Setup and Installation
 Environment Variables
@@ -17,25 +17,37 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 
 ##  Features
 User Authentication: Sign up and log in to access the full range of features.
+
 Blog Creation: Admin and Writers can create and edit blog posts, adding images and text content.
+
 Profile Management: Users can update personal profiles, including profile pictures stored on Amazon S3.
+
 Image Uploads: Blog posts and user profiles support image uploads, managed through Amazon S3.
+
 Commenting and Interaction: Users can comment on blog posts and interact with content.
+
 Search and Filtering: Search for posts by keywords, authors, or date ranges.
 
 ## Technologies Used
 
 ### Frontend
 React: For building the user interface.
+
 React Router: For routing between different pages.
+
 Tailwind CSS: For styling and responsive design.
+
 JWT: For token-based authentication.
 
 ### Backend
 Node.js: JavaScript runtime environment.
+
 Express: Web framework for the server.
+
 Sequelize: ORM for managing PostgreSQL.
+
 AWS S3: Cloud storage for images.
+
 PostgreSQL: Database for storing application data.
 
 ## Project Structure
