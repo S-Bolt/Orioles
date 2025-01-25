@@ -1,46 +1,46 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from '../assets/BbLogo.png'
-import AuthContext from '../utils/AuthContext';
-import { API_BASE_URL } from '../config';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/BbLogo.png";
+import AuthContext from "../utils/AuthContext";
+import { API_BASE_URL } from "../config";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    try{
+    try {
       const response = await fetch(`${API_BASE_URL}/users/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({  username, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
-      if(response.ok){
+      if (response.ok) {
         //call login funtion from AuthContext if login is sucessfull to update isAuthenticated
-        login(data.token)
-        console.log(localStorage.getItem('token'));
+        login(data.token);
+        console.log(localStorage.getItem("token"));
 
         //navigate to dashbord
-        navigate('/');
+        navigate("/");
       } else {
-        setError(data.error || 'login failed');
+        setError(data.error || "login failed");
       }
     } catch (error) {
-      console.error({error: 'error occured', details: error.message})
-      setError('Error occured during login')
+      console.error({ error: "error occured", details: error.message });
+      setError("Error occured during login");
     }
-  }
+  };
 
   return (
     <div className="bg-gray-100 flex justify-center items-center h-screen">
@@ -58,7 +58,7 @@ function Login() {
         <h1 className="text-2xl font-semibold mb-4">Login</h1>
         <form onSubmit={handleLogin}>
           {error && <p className="text-red-500 mb-4">{error}</p>}
-          
+
           {/* Username Input */}
           <div className="mb-4">
             <label htmlFor="username" className="block text-gray-600">
@@ -117,7 +117,7 @@ function Login() {
             type="submit"
             className="bg-oriolesOrange hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full"
           >
-           Login
+            Login
           </button>
         </form>
 

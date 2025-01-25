@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('blogPosts', 'imageUrl', {
+    await queryInterface.addColumn("blogPosts", "imageUrl", {
       type: Sequelize.STRING,
-      allowNull: true, 
+      allowNull: true,
       defaultValue: null,
-      after: 'content', 
+      after: "content",
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('blogPosts', 'imageUrl');
-  }
+    await queryInterface.removeColumn("blogPosts", "imageUrl");
+  },
 };

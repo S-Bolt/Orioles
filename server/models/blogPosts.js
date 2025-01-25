@@ -1,9 +1,9 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connections');
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/connections");
 
 class BlogPosts extends Model {}
 
-  BlogPosts.init (
+BlogPosts.init(
   {
     title: {
       type: DataTypes.STRING,
@@ -16,7 +16,7 @@ class BlogPosts extends Model {}
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
-    }, 
+    },
     imageUrl: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -25,24 +25,21 @@ class BlogPosts extends Model {}
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: 'users',
-        key: 'id'
+        model: "users",
+        key: "id",
       },
-      onUpdate: 'CASCADE',
-      onDelete: 'CASCADE'
-    }
-  }, {
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    },
+  },
+  {
     sequelize,
     timestamps: true,
     freezeTableName: true,
     underscored: false,
-    modelName: 'BlogPosts',
-    tableName: 'blogPosts',
+    modelName: "BlogPosts",
+    tableName: "blogPosts",
+  }
+);
 
-    
-  });
-
-
-  
- module.exports = BlogPosts;
-
+module.exports = BlogPosts;

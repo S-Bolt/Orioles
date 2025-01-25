@@ -1,9 +1,11 @@
 # Orioles Fan Blog Project ⚾🧢⚾
+
 Welcome to the Orioles Fan Blog! This application provides an interactive platform for Baltimore Orioles fans to share opinions, discuss game highlights, and connect with other fans.
 
 ![TheBirdBlog](./client/src/assets/blog.png)
 
 ## Table of Contents 📖📖📖
+
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
@@ -15,9 +17,10 @@ Welcome to the Orioles Fan Blog! This application provides an interactive platfo
 - [License](#license)
 
 ## Project Overview 😊😊😊
+
 The Orioles Fan Blog is a full-stack web application that provides a blog-based platform for fans of the Baltimore Orioles baseball team. Users can read, comment on, and interact with blog posts about the Orioles, while registered members can create accounts to join the community. Admins can manage posts, and all posts include features like comments and images.
 
-##  Features 🤯💥🧨
+## Features 🤯💥🧨
 
 **User Authentication:** Sign up and log in to access the full range of features.
 
@@ -36,6 +39,7 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 ## Technologies Used ⚙️⚡⚙️
 
 ### Frontend 🐥
+
 **React:** For building the user interface.
 
 **React Router:** For routing between different pages.
@@ -45,6 +49,7 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 **JWT:** For token-based authentication.
 
 ### Backend 🎒
+
 **Node.js:** JavaScript runtime environment.
 
 **Express:** Web framework for the server.
@@ -58,12 +63,14 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 ## Setup and Installation 🛝🥳🎴
 
 1. Clone the repository
- ```bash
-    git clone https://github.com/S-Bolt/Orioles.git
-    cd Orioles
+
+```bash
+   git clone https://github.com/S-Bolt/Orioles.git
+   cd Orioles
 ```
 
 2. Install dependencies
+
 ```bash
     npm install
     cd client && npm install
@@ -77,6 +84,7 @@ The Orioles Fan Blog is a full-stack web application that provides a blog-based 
 ## Environment Variables 🔐🤐🪪
 
 Create .env files in the root, client, and server directories as needed. Here’s a template for the server .env:
+
 ```plaintext
     PG_USER="your_db_user"
     PG_PASSWORD="your_db_password"
@@ -90,17 +98,23 @@ Create .env files in the root, client, and server directories as needed. Here’
     AWS_REGION="your_aws_region"
     S3_BUCKET_NAME="your_bucket_name"
 ```
+
 Client.env:
+
 ```plaintext
     VITE_API_BASE_URL="your_api_base_url"
 ```
+
 ## Usage 🥳💃🎈
+
 Navigate to main directory then start development server
+
 ```bash
     cd Orioles
     npm run dev
 ```
-Once done open the app by visting http://localhost:5173/ 
+
+Once done open the app by visting http://localhost:5173/
 
 ## Project Structure🫀🧠🤯
 
@@ -115,4 +129,5 @@ Once done open the app by visting http://localhost:5173/
 5. Submit a pull request.
 
 ## License 🪪👍⚡
+
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
